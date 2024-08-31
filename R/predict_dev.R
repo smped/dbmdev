@@ -66,7 +66,6 @@
 #' @export
 #'
 #' @examples
-#' library(dplyr)
 #'
 #' # Sample hourly temperatures at a given location
 #' d1 <- daily(days = 200, start_date = "2023-09-01")
@@ -77,16 +76,20 @@
 #' row.names(dev_params()) # possible values for "start_stage"
 #'
 #' # Predict forward 1 generation from the egg stage
-#' predict_dev(h1, start_date = "2023-09-05")
+#' pred <- predict_dev(h1, start_date = "2023-09-05")
+#' pred$stages
+#' pred$generations
 #'
 #' # Predict forward 2 generations from the mid-point of the "instar3" stage
-#' predict_dev(
+#' pred2 <- predict_dev(
 #'   h1,
 #'   start_date = "2023-09-02",
 #'   start_stage = "instar3",
 #'   start_dev = 0.5,
 #'   gens = 2
-#'   )
+#'  )
+#' pred2$stages
+#' pred2$generations
 #'
 #' # Predict forward 4 generations from "instar4" and output generation times
 #' predict_dev(
@@ -94,8 +97,8 @@
 #'   start_date = "2023-10-01",
 #'   start_stage = "instar4",
 #'   gens = 4,
-#'   keep = "gens"
-#'   )
+#'   keep = "gen"
+#'  )
 #'
 #' # Predict back in time 5 generations from the instar1_2 stage.
 #' # A warning is thrown if you try to predict beyond the available
@@ -106,10 +109,10 @@
 #'   start_stage = "instar1_2",
 #'   gens = 5,
 #'   direction = "back",
-#'   keep = "gens"
-#'   )
+#'   keep = "gen"
+#' )
 #'
-#' ## End
+#'
 #' @importFrom lubridate as_date
 #' @importFrom dplyr bind_rows
 #' @importFrom utils tail
@@ -136,12 +139,6 @@ predict_dev <- function(
   # check for valid stages
   stopifnot(all(c("a", "m", "Tmin", "Tmax") %in% colnames(params)))
   start_stage <- match.arg(start_stage, rownames(params))
-
-  # check the input dataframe has the required variables
-  # TO DO
-  # if (!"datetime" %in% names(df) || !"obs" %in% names(df)) {
-  #   stop("'df' must contain the variables `datetime` and `obs`")
-  # }
 
   # check that required variables exist in input data frame
   reqd_vars  <- c("location_key", "datetime", "obs")
@@ -218,7 +215,7 @@ predict_dev <- function(
   df <- df[o, ]
 
   out_gens <- vector("list", gens)
-  fitted <- c()
+  fitted <- lubridate::Date()
   stages <- all_stages[which(all_stages == start_stage):length(all_stages)]
 
   for (g in seq_len(gens)) {
@@ -230,9 +227,17 @@ predict_dev <- function(
     for (s in all_stages) {
 
       tmp_df <- df[!df$datetime %in% fitted,]
-      args <- c(list(df = tmp_df), direction = direction, params[s, ])
-      out[[s]] <- do.call(FUN, args)
-      out[[s]]$gen <- g
+      if (nrow(tmp_df)) {
+        args <- c(list(df = tmp_df), direction = direction, params[s, ])
+        out[[s]] <- do.call(FUN, args)
+        out[[s]]$gen <- g
+      } else {
+        ## Handle when all dates are fitted
+        out[[s]] <- data.frame(
+          datetime = lubridate::Date(), obs = numeric(), gen = integer(),
+          stage = character(), dev = numeric(), total_dev = numeric()
+        )
+      }
 
       if (s == start_stage & g == 1) {
         ## Only needed in the first generation?
