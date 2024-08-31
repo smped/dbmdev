@@ -67,6 +67,7 @@ hourly3 \%>\%
   axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
   labs(x = NULL, y = "Temperature (oC)") +
   ggtitle("Hourly temperature observations for 3 locations")
+
 }
 \references{
 Cesaraccio et al. (2001). An improved model for determining

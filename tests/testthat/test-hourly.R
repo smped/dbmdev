@@ -41,7 +41,7 @@ test_that("errors work if variables of input dataframe are the wrong class", {
   df_wrong <- d1 %>%
     mutate(min  = as.character(min),
            date = as.character(date))
-  expect_error(hourly(df_wrong), "must be class")
+  expect_error(hourly(df_wrong), ".+classes listed.+")
 })
 
 # test the error outputs one row per variable that has wrong class
