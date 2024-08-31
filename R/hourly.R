@@ -66,6 +66,7 @@
 #'   axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
 #'   labs(x = NULL, y = "Temperature (oC)") +
 #'   ggtitle("Hourly temperature observations for 3 locations")
+#' @importFrom magrittr %>%
 hourly <- function(df, add_location_key = FALSE, keep_suntimes = FALSE) {
 
   # check for a non-empty data.frame

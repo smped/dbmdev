@@ -23,6 +23,7 @@ Imports:
     dplyr,
     lubridate,
     lutz,
+    magrittr,
     methods,
     suncalc,
     tidyselect
