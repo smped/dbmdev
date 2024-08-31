@@ -5,7 +5,7 @@
 #' and minimum temperatures for a given geographic location using the
 #' model of Cesaraccio (2001).
 #' Hourly temperatures are used to predict temperature-dependent development
-#' rates of insects with the function \code{\link{predict_development}}.
+#' rates of insects with the function \code{\link{predict_dev}}.
 #'
 #' @param df A \code{data.frame} of daily maximum and minimum temperature
 #' observations in degrees Celsius and geographic coordinates in decimal
@@ -20,7 +20,7 @@
 #' \code{data.frame} with a unique location key (character string) for each set
 #' of unique geographic coordinates, if one does not already exist. This is
 #' useful when modelling development at multiple locations using the function
-#' \code{predict_development}.
+#' \code{predict_dev}.
 #'
 #' @param keep_suntimes Whether to preserve the sunrise and sunset
 #' times used for calculations in the output.

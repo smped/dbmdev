@@ -6,15 +6,16 @@
 \usage{
 predict_dev(
   df,
-  FUN = briere2,
+  FUN = "briere2",
   params = dev_params(),
   start_date,
   start_hour = 12,
   start_stage = "egg",
   start_dev = NULL,
   gens = 1,
-  direction = "forward",
-  keep = "stages"
+  direction = c("forward", "back"),
+  keep = c("all", "stages", "increments", "generations"),
+  ...
 )
 }
 \arguments{
@@ -69,6 +70,8 @@ commenced and completed. Specifiying "gens" outputs a \code{data.frame}
 summarising the generation times, and "increments" outputs all hourly and
 cumulative development increments. Specifying "all" outputs a list
 with all three data.frames.}
+
+\item{...}{Passed to \code{\link[lubridate:as_date]{lubridate::as_date()}}}
 }
 \value{
 \code{data.frame} or \code{list}.
